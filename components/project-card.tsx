@@ -18,7 +18,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <motion.div
-      className="rounded-lg overflow-hidden bg-gray-900"
+      className="rounded-lg overflow-hidden bg-gray-900 max-w-[90%] mx-auto"
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
     >

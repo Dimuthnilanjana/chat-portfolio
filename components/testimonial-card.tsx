@@ -18,7 +18,11 @@ interface TestimonialCardProps {
 
 export function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <motion.div className="bg-gray-900 rounded-lg p-4" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
+    <motion.div
+      className="bg-gray-900 rounded-lg p-4 max-w-[90%] mx-auto"
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+    >
       <div className="flex items-start gap-3 mb-3">
         <Avatar className="h-10 w-10 flex-shrink-0">
           <AvatarImage src={testimonial.avatar || "/placeholder.svg"} alt={testimonial.name} />

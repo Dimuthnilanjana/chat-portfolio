@@ -1,24 +1,34 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { MessageBubble } from "@/components/message-bubble"
 import { ContactForm } from "@/components/contact-form"
 import { SocialButtons } from "@/components/social-buttons"
 import { ProjectCard } from "@/components/project-card"
 import { TestimonialCard } from "@/components/testimonial-card"
-import { Avatar } from "@/components/ui/avatar"
-import { AvatarImage } from "@/components/ui/avatar"
+import { ProfileHeader } from "@/components/profile-header"
+import { DateSeparator } from "@/components/date-separator"
+import { TypingIndicator } from "@/components/typing-indicator"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
-  const [visibleMessages, setVisibleMessages] = useState(1)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
   const totalMessages = 8
+  const [visibleMessages, setVisibleMessages] = useState(0)
+  const [isTyping, setIsTyping] = useState(false)
+  const [currentTypingIndex, setCurrentTypingIndex] = useState(0)
+  const router = useRouter()
 
   // Sample data
   const designer = {
-    name: "Alex Morgan",
-    title: "UI/UX Designer & Developer",
+    name: "Thimira Dulakshitha",
+    title: "CX / Product Designer at @IntrepidTravel",
+    pronouns: "He/Him",
+    tagline: "Crafting moments that matter. 🔍",
+    location: "Colombo, Sri Lanka",
+    email: "hello@thimira.me",
+    personality: "ENFJ",
     avatar: "/placeholder.svg?height=100&width=100",
+    isOnline: true,
   }
 
   const projects = [
@@ -44,167 +54,238 @@ export default function Home() {
       name: "Sarah Johnson",
       role: "Product Manager at TechCorp",
       content:
-        "Working with Alex was incredible. They delivered beyond our expectations and were a joy to collaborate with.",
+        "Working with Thimira was incredible. They delivered beyond our expectations and were a joy to collaborate with.",
       avatar: "/placeholder.svg?height=60&width=60",
     },
     {
       id: 2,
       name: "Michael Chen",
       role: "Founder at StartupX",
-      content: "Alex has an eye for detail that transformed our product. Highly recommended for any design project.",
+      content: "Thimira has an eye for detail that transformed our product. Highly recommended for any design project.",
       avatar: "/placeholder.svg?height=60&width=60",
     },
   ]
 
-  // Intersection observer to reveal messages as user scrolls
+  // Sequential message loading with typing indicator
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && visibleMessages < totalMessages) {
-            setTimeout(() => {
-              setVisibleMessages((prev) => Math.min(prev + 1, totalMessages))
-            }, 300)
-          }
-        })
-      },
-      { threshold: 0.1 },
-    )
+    // Start with typing indicator for the first message
+    if (visibleMessages === 0) {
+      setIsTyping(true)
+      setCurrentTypingIndex(1)
 
-    if (messagesEndRef.current) {
-      observer.observe(messagesEndRef.current)
+      // Show first message after typing delay
+      const typingTimer = setTimeout(() => {
+        setIsTyping(false)
+        setVisibleMessages(1)
+      }, 800)
+
+      return () => clearTimeout(typingTimer)
     }
 
+    // For subsequent messages
+    if (visibleMessages < totalMessages) {
+      const nextMessageIndex = visibleMessages + 1
+
+      // Delay before showing typing indicator
+      const delayBeforeTyping = setTimeout(() => {
+        // Only show typing indicator for designer messages (odd indices)
+        if (nextMessageIndex % 2 !== 0) {
+          setIsTyping(true)
+          setCurrentTypingIndex(nextMessageIndex)
+        }
+
+        // Delay before showing the actual message
+        const typingDuration = nextMessageIndex % 2 !== 0 ? 800 : 500
+        const messageTimer = setTimeout(() => {
+          setIsTyping(false)
+          setVisibleMessages(nextMessageIndex)
+        }, typingDuration)
+
+        return () => clearTimeout(messageTimer)
+      }, 600)
+
+      return () => clearTimeout(delayBeforeTyping)
+    }
+  }, [visibleMessages, totalMessages])
+
+  // Reset messages on reload
+  useEffect(() => {
+    // Reset to start the animation sequence
+    setVisibleMessages(0)
+
+    // Optional: Save progress in localStorage to prevent full reset on navigation
     return () => {
-      if (messagesEndRef.current) {
-        observer.unobserve(messagesEndRef.current)
-      }
+      localStorage.setItem("chatProgress", visibleMessages.toString())
     }
-  }, [visibleMessages])
+  }, [])
 
-  // Scroll to bottom when new messages appear
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" })
-    }
-  }, [visibleMessages])
-
-  // Load saved scroll position
-  useEffect(() => {
-    const savedScrollPosition = localStorage.getItem("portfolioScrollPosition")
-    const savedVisibleMessages = localStorage.getItem("portfolioVisibleMessages")
-
-    if (savedVisibleMessages) {
-      setVisibleMessages(Number.parseInt(savedVisibleMessages))
-    }
-
-    if (savedScrollPosition) {
-      setTimeout(() => {
-        window.scrollTo(0, Number.parseInt(savedScrollPosition))
-      }, 100)
-    }
-
-    // Save scroll position and visible messages when leaving
-    const handleBeforeUnload = () => {
-      localStorage.setItem("portfolioScrollPosition", window.scrollY.toString())
-      localStorage.setItem("portfolioVisibleMessages", visibleMessages.toString())
-    }
-
-    window.addEventListener("beforeunload", handleBeforeUnload)
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-    }
-  }, [visibleMessages])
+  // Handle project click
+  const handleProjectClick = (projectId: number) => {
+    router.push(`/project/${projectId}`)
+  }
 
   return (
     <main className="flex min-h-screen flex-col bg-[#0f0f0f] text-white">
-      <div className="container max-w-3xl mx-auto px-4 py-8 pb-32">
-        {/* Chat header */}
-        <div className="sticky top-0 z-10 bg-[#0f0f0f] border-b border-gray-800 pb-4 mb-6">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 border-2 border-blue-500">
-              <AvatarImage src={designer.avatar || "/placeholder.svg"} alt={designer.name} />
-            </Avatar>
-            <div>
-              <h1 className="font-bold text-xl">{designer.name}</h1>
-              <p className="text-gray-400 text-sm">{designer.title}</p>
-            </div>
-          </div>
-        </div>
+      <div className="container max-w-2xl mx-auto px-4 pb-32">
+        {/* Profile Header */}
+        <ProfileHeader designer={designer} />
 
         {/* Chat messages */}
         <div className="space-y-6">
+          {/* Date separator */}
+          <DateSeparator />
+
           {/* Introduction */}
+          {isTyping && currentTypingIndex === 1 && <TypingIndicator />}
           {visibleMessages >= 1 && (
-            <MessageBubble type="designer" avatar={designer.avatar} animate={true}>
-              <h2 className="text-xl font-bold mb-2">Hey there! 👋</h2>
-              <p>
-                I'm {designer.name}, a {designer.title} passionate about creating beautiful, functional digital
-                experiences.
-              </p>
-            </MessageBubble>
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                <img
+                  src={designer.avatar || "/placeholder.svg"}
+                  alt={designer.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                <MessageBubble type="designer" animate={true}>
+                  <p>Hey! It's me, Thimira, a product designer based in Colombo. How can I help you today? 😊</p>
+                </MessageBubble>
+              </div>
+            </div>
           )}
 
           {/* User question */}
           {visibleMessages >= 2 && (
-            <MessageBubble type="user" animate={true}>
-              <p>Can I see your work?</p>
-            </MessageBubble>
+            <div className="flex flex-col items-end mb-6">
+              <div className="text-xs text-gray-400 mb-1">You</div>
+              <MessageBubble type="user" animate={true}>
+                <p>Can I see your work?</p>
+              </MessageBubble>
+            </div>
+          )}
+
+          {/* Designer philosophy */}
+          {isTyping && currentTypingIndex === 3 && <TypingIndicator />}
+          {visibleMessages >= 3 && (
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                <img
+                  src={designer.avatar || "/placeholder.svg"}
+                  alt={designer.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                <MessageBubble type="designer" animate={true}>
+                  <p>
+                    Of course! Have you ever wondered why some products capture attention while others do not? It is not
+                    just about quality but about creating a genuine connection. I work on designing digital products and
+                    brands that make a lasting impression and truly stand out.
+                  </p>
+                </MessageBubble>
+              </div>
+            </div>
           )}
 
           {/* Projects */}
-          {visibleMessages >= 3 && (
-            <MessageBubble type="designer" avatar={designer.avatar} animate={true}>
-              <h2 className="text-xl font-bold mb-4">Here are some of my recent projects:</h2>
-              <div className="space-y-4">
-                {projects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
+          {isTyping && currentTypingIndex === 5 && <TypingIndicator />}
+          {visibleMessages >= 4 && (
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                <img
+                  src={designer.avatar || "/placeholder.svg"}
+                  alt={designer.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            </MessageBubble>
+              <div className="w-full">
+                <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                <MessageBubble type="designer" animate={true}>
+                  <h2 className="text-lg font-bold mb-2">Here's some recent work</h2>
+                </MessageBubble>
+                <div className="mt-3 space-y-4">
+                  {projects.map((project) => (
+                    <div key={project.id} onClick={() => handleProjectClick(project.id)} className="cursor-pointer">
+                      <ProjectCard project={project} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
 
           {/* User question about clients */}
-          {visibleMessages >= 4 && (
-            <MessageBubble type="user" animate={true}>
-              <p>What do your clients say about you?</p>
-            </MessageBubble>
+          {visibleMessages >= 5 && (
+            <div className="flex flex-col items-end mb-6">
+              <div className="text-xs text-gray-400 mb-1">You</div>
+              <MessageBubble type="user" animate={true}>
+                <p>What do your clients say about you?</p>
+              </MessageBubble>
+            </div>
           )}
 
           {/* Testimonials */}
-          {visibleMessages >= 5 && (
-            <MessageBubble type="designer" avatar={designer.avatar} animate={true}>
-              <h2 className="text-xl font-bold mb-4">Here's what people I've worked with have to say:</h2>
-              <div className="space-y-4">
-                {testimonials.map((testimonial) => (
-                  <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-                ))}
+          {isTyping && currentTypingIndex === 7 && <TypingIndicator />}
+          {visibleMessages >= 6 && (
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                <img
+                  src={designer.avatar || "/placeholder.svg"}
+                  alt={designer.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            </MessageBubble>
+              <div className="w-full">
+                <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                <MessageBubble type="designer" animate={true}>
+                  <h2 className="text-lg font-bold mb-2">Here's what people I've worked with have to say:</h2>
+                </MessageBubble>
+                <div className="mt-3 space-y-4">
+                  {testimonials.map((testimonial) => (
+                    <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
 
           {/* User question about contact */}
-          {visibleMessages >= 6 && (
-            <MessageBubble type="user" animate={true}>
-              <p>How can I get in touch with you?</p>
-            </MessageBubble>
+          {visibleMessages >= 7 && (
+            <div className="flex flex-col items-end mb-6">
+              <div className="text-xs text-gray-400 mb-1">You</div>
+              <MessageBubble type="user" animate={true}>
+                <p>How can I get in touch with you?</p>
+              </MessageBubble>
+            </div>
           )}
 
           {/* Contact info */}
-          {visibleMessages >= 7 && (
-            <MessageBubble type="designer" avatar={designer.avatar} animate={true}>
-              <h2 className="text-xl font-bold mb-2">Let's connect!</h2>
-              <p className="mb-4">You can reach me through any of these channels:</p>
-              <SocialButtons />
-            </MessageBubble>
+          {isTyping && currentTypingIndex === 8 && <TypingIndicator />}
+          {visibleMessages >= 8 && (
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                <img
+                  src={designer.avatar || "/placeholder.svg"}
+                  alt={designer.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                <MessageBubble type="designer" animate={true}>
+                  <h2 className="text-lg font-bold mb-2">Let's connect!</h2>
+                  <p className="mb-4">You can reach me through any of these channels:</p>
+                  <SocialButtons />
+                </MessageBubble>
+              </div>
+            </div>
           )}
-
-          {/* End of messages marker */}
-          <div ref={messagesEndRef} className="h-1" />
         </div>
       </div>
 
-      {/* Sticky contact form footer */}
+      {/* Sticky chat input footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-gray-800 p-4">
         <ContactForm />
       </div>
