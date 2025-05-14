@@ -102,7 +102,7 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 1 }}
+              transition={{ duration: 0.8 }}
               style={{ overflow: "hidden" }}
             >
               <p className="text-gray-400 text-sm mt-2 mb-2">{designer.pronouns}</p>
