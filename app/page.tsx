@@ -32,7 +32,7 @@ export default function Home() {
     ),
     
     pronouns: "He/Him",
-    tagline: "Make it Iconic. 🔍",
+    // tagline: "Make it Iconic. 🔍",
     location: "Colombo, Sri Lanka",
     email: "dimuth.work@gmail.com",
     // personality: "ENFJ",
@@ -310,7 +310,8 @@ export default function Home() {
 
       {/* Sticky chat input footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-gray-800 p-4">
-        <ContactForm />
+      <p className="text-center">Made by Dimuth Nilanjana</p>
+        {/* <ContactForm /> */}
       </div>
     </main>
   )
