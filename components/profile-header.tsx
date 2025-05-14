@@ -21,54 +21,73 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
   return (
     <motion.div
-      layout
-      className={`sticky top-0 z-20 transition-all duration-300 ${
+      layout="position"
+      className={`sticky top-0 z-20 ${
         isScrolled
-          ? "py-2 backdrop-blur-md bg-[#0f0f0f]/80 shadow-md"
-          : "py-6 bg-[#0f0f0f]"
+          ? "backdrop-blur-md bg-[#0f0f0f]/80 shadow-md"
+          : "bg-[#0f0f0f]"
       }`}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       <motion.div
         layout
-        className="container max-w-2xl mx-auto px-4 flex flex-col items-center text-center"
+        className={`container max-w-2xl mx-auto px-4 flex flex-col items-center text-center ${
+          isScrolled ? "py-2" : "py-6"
+        }`}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
-        {/* Avatar Section */}
+        {/* Avatar */}
         <motion.div
           layout
-          className={`relative ${isScrolled ? "mb-1" : "mb-3"}`}
+          className="relative"
+          transition={{ duration: 0.3 }}
+          style={{ marginBottom: isScrolled ? 4 : 12 }}
         >
           <motion.div
             layout
-            className={`rounded-full overflow-hidden border-2 border-blue-500 ${
-              isScrolled ? "w-12 h-12" : "w-20 h-20"
-            }`}
+            className="rounded-full overflow-hidden border-2 border-blue-500"
+            style={{
+              width: isScrolled ? 48 : 80,
+              height: isScrolled ? 48 : 80,
+            }}
+            transition={{ duration: 0.3 }}
           >
-            <img
+            <motion.img
+              layout
               src={designer.avatar || "/placeholder.svg"}
               alt={designer.name}
               className="w-full h-full object-cover"
             />
           </motion.div>
+
           {designer.isOnline && (
             <motion.div
               layout
-              className={`absolute border-2 border-[#0f0f0f] bg-green-500 rounded-full ${
-                isScrolled ? "bottom-0 right-0 w-3 h-3" : "bottom-1 right-1 w-4 h-4"
-              }`}
+              className="absolute border-2 border-[#0f0f0f] bg-green-500 rounded-full"
+              style={{
+                width: isScrolled ? 12 : 16,
+                height: isScrolled ? 12 : 16,
+                bottom: isScrolled ? 0 : 4,
+                right: isScrolled ? 0 : 4,
+              }}
+              transition={{ duration: 0.3 }}
             />
           )}
         </motion.div>
 
-        {/* Text Section */}
+        {/* Name */}
         <motion.h1
           layout
-          className={`font-bold transition-all duration-300 ${
-            isScrolled ? "text-lg" : "text-xl"
-          }`}
+          className="font-bold"
+          style={{
+            fontSize: isScrolled ? "1.125rem" : "1.25rem",
+          }}
+          transition={{ duration: 0.3 }}
         >
           {designer.name}
         </motion.h1>
 
+        {/* Extra Details (on scroll up) */}
         <AnimatePresence>
           {!isScrolled && (
             <motion.div
@@ -76,7 +95,7 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
               <p className="text-gray-400 text-sm mt-2 mb-2">{designer.pronouns}</p>
