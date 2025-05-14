@@ -29,6 +29,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   const [isTyping, setIsTyping] = useState(false)
   const [currentTypingIndex, setCurrentTypingIndex] = useState(0)
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const totalMessages = 8
 
   // Sample project data - in a real app, you'd fetch this based on the ID
@@ -65,13 +66,19 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
   const project = projects[projectId]
 
-  // Handle scroll events to show/hide scroll-to-top button
+  // Handle scroll events to show/hide scroll-to-top button and header state
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 300) {
         setShowScrollTop(true)
       } else {
         setShowScrollTop(false)
+      }
+
+      if (window.scrollY > 50) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
       }
     }
 
@@ -135,9 +142,15 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="min-h-screen bg-[#0f0f0f] text-white">
-      {/* Header with back button */}
-      <div className="sticky top-0 z-10 bg-[#0f0f0f] border-b border-gray-800 p-4">
-        <div className="container max-w-2xl mx-auto flex items-center">
+      {/* Header with back button - glass effect when scrolled */}
+      <div
+        className={`sticky top-0 z-10 transition-all duration-300 ${
+          isScrolled
+            ? "py-2 backdrop-blur-md bg-[#0f0f0f]/80 border-b border-gray-800/70 shadow-md"
+            : "py-4 bg-[#0f0f0f] border-b border-gray-800"
+        }`}
+      >
+        <div className="container max-w-2xl mx-auto px-4 flex items-center">
           <Button
             variant="ghost"
             size="icon"
