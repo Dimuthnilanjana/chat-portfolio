@@ -16,6 +16,7 @@ export default function Home() {
   const [visibleMessages, setVisibleMessages] = useState(0)
   const [isTyping, setIsTyping] = useState(false)
   const [currentTypingIndex, setCurrentTypingIndex] = useState(0)
+  const [isScrolled, setIsScrolled] = useState(false)
   const router = useRouter()
 
   // Sample data
@@ -65,6 +66,20 @@ export default function Home() {
       avatar: "/placeholder.svg?height=60&width=60",
     },
   ]
+
+  // Handle scroll events to detect when page is scrolled
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   // Sequential message loading with typing indicator
   useEffect(() => {
@@ -126,10 +141,10 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col bg-[#0f0f0f] text-white">
-      <div className="container max-w-2xl mx-auto px-4 pb-32">
-        {/* Profile Header */}
-        <ProfileHeader designer={designer} />
+      {/* Profile Header with glass effect when scrolled */}
+      <ProfileHeader designer={designer} isScrolled={isScrolled} />
 
+      <div className="container max-w-2xl mx-auto px-4 pb-32 pt-6">
         {/* Chat messages */}
         <div className="space-y-6">
           {/* Date separator */}
