@@ -24,10 +24,10 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
       layout
       className="sticky top-0 z-20 border-b border-gray-800"
       style={{
-        backgroundColor: isScrolled ? "rgba(15,15,15,0.8)" : "#0f0f0f",
-        backdropFilter: isScrolled ? "blur(8px)" : "none",
-        boxShadow: isScrolled ? "0 2px 6px rgba(0,0,0,0.3)" : "none",
-        transition: "all 0.3s ease",
+        backgroundColor: isScrolled ? "rgba(15,15,15,0.95)" : "#0f0f0f",
+        boxShadow: isScrolled ? "0 2px 6px rgba(0,0,0,0.25)" : "none",
+        transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+        willChange: "background-color, box-shadow", // improves GPU hinting
       }}
     >
       <motion.div
@@ -43,23 +43,19 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
         <motion.div layout className="relative" style={{ marginBottom: isScrolled ? 4 : 12 }}>
           <motion.div
             layout
+            className="rounded-full overflow-hidden border-2 border-blue-500"
             style={{
               width: isScrolled ? 48 : 80,
               height: isScrolled ? 48 : 80,
-              borderRadius: "9999px",
-              overflow: "hidden",
-              border: "2px solid #3b82f6",
-              transition: "all 0.3s ease",
+              transition: "width 0.3s ease, height 0.3s ease",
             }}
           >
-            <motion.img
-              layout
+            <img
               src={designer.avatar || "/placeholder.svg"}
               alt={designer.name}
+              className="w-full h-full object-cover"
               style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
+                display: "block",
               }}
             />
           </motion.div>
@@ -75,7 +71,7 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
                 height: isScrolled ? 12 : 16,
                 bottom: 0,
                 right: 0,
-                transition: "all 0.3s ease",
+                transition: "width 0.3s ease, height 0.3s ease",
               }}
             />
           )}
@@ -86,7 +82,7 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
           layout
           style={{
             fontWeight: 700,
-            fontSize: isScrolled ? "1.125rem" : "1.25rem", // text-lg vs text-xl
+            fontSize: isScrolled ? "1.125rem" : "1.25rem",
             color: "#ffffff",
             transition: "font-size 0.3s ease",
           }}
@@ -94,7 +90,6 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
           {designer.name}
         </motion.h1>
 
-        {/* Only show extra info when not scrolled */}
         <AnimatePresence>
           {!isScrolled && (
             <motion.div
@@ -102,7 +97,7 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.25 }}
               style={{ overflow: "hidden" }}
             >
               <p className="text-gray-400 text-sm mt-2 mb-2">{designer.pronouns}</p>
