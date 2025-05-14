@@ -172,7 +172,7 @@ export default function Home() {
               <div>
                 <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
                 <MessageBubble type="designer" animate={true}>
-                  <p>Hey! It's me, Thimira, a product designer based in Colombo. How can I help you today? 😊</p>
+                  <p>Hey! It's me, Dimuth, a UX Engineer based in Colombo. How can I help you today? 😊</p>
                 </MessageBubble>
               </div>
             </div>
