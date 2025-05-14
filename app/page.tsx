@@ -21,13 +21,21 @@ export default function Home() {
 
   // Sample data
   const designer = {
-    name: "Thimira Dulakshitha",
-    title: "CX / Product Designer at @IntrepidTravel",
+    name: "Dimuth Nilanjana",
+    title: (
+      <>
+        UI/UX Engineer{" "}
+        <a href="https://www.epictechnology.lk/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-700">
+          @Epic Lanka
+        </a>
+      </>
+    ),
+    
     pronouns: "He/Him",
-    tagline: "Crafting moments that matter. 🔍",
+    tagline: "Make it Iconic. 🔍",
     location: "Colombo, Sri Lanka",
-    email: "hello@thimira.me",
-    personality: "ENFJ",
+    email: "dimuth.work@gmail.com",
+    // personality: "ENFJ",
     avatar: "/placeholder.svg?height=100&width=100",
     isOnline: true,
   }
