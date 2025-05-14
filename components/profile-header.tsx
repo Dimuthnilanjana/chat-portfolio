@@ -21,56 +21,62 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
   return (
     <motion.div
-      layout="position"
-      className={`sticky top-0 z-20 ${
-        isScrolled
-          ? "backdrop-blur-md bg-[#0f0f0f]/80 shadow-md"
-          : "bg-[#0f0f0f]"
-      }`}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      layout
+      className="sticky top-0 z-20 border-b border-gray-800"
+      style={{
+        backgroundColor: isScrolled ? "rgba(15,15,15,0.8)" : "#0f0f0f",
+        backdropFilter: isScrolled ? "blur(8px)" : "none",
+        boxShadow: isScrolled ? "0 2px 6px rgba(0,0,0,0.3)" : "none",
+        transition: "all 0.3s ease",
+      }}
     >
       <motion.div
         layout
-        className={`container max-w-2xl mx-auto px-4 flex flex-col items-center text-center ${
-          isScrolled ? "py-2" : "py-6"
-        }`}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="container max-w-2xl mx-auto px-4 flex flex-col items-center text-center"
+        style={{
+          paddingTop: isScrolled ? 8 : 24,
+          paddingBottom: isScrolled ? 8 : 24,
+          transition: "padding 0.3s ease",
+        }}
       >
         {/* Avatar */}
-        <motion.div
-          layout
-          className="relative"
-          transition={{ duration: 0.3 }}
-          style={{ marginBottom: isScrolled ? 4 : 12 }}
-        >
+        <motion.div layout className="relative" style={{ marginBottom: isScrolled ? 4 : 12 }}>
           <motion.div
             layout
-            className="rounded-full overflow-hidden border-2 border-blue-500"
             style={{
               width: isScrolled ? 48 : 80,
               height: isScrolled ? 48 : 80,
+              borderRadius: "9999px",
+              overflow: "hidden",
+              border: "2px solid #3b82f6",
+              transition: "all 0.3s ease",
             }}
-            transition={{ duration: 0.3 }}
           >
             <motion.img
               layout
               src={designer.avatar || "/placeholder.svg"}
               alt={designer.name}
-              className="w-full h-full object-cover"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
             />
           </motion.div>
-
           {designer.isOnline && (
             <motion.div
               layout
-              className="absolute border-2 border-[#0f0f0f] bg-green-500 rounded-full"
               style={{
+                position: "absolute",
+                backgroundColor: "#22c55e",
+                border: "2px solid #0f0f0f",
+                borderRadius: "9999px",
                 width: isScrolled ? 12 : 16,
                 height: isScrolled ? 12 : 16,
-                bottom: isScrolled ? 0 : 4,
-                right: isScrolled ? 0 : 4,
+                bottom: 0,
+                right: 0,
+                transition: "all 0.3s ease",
               }}
-              transition={{ duration: 0.3 }}
             />
           )}
         </motion.div>
@@ -78,16 +84,17 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
         {/* Name */}
         <motion.h1
           layout
-          className="font-bold"
           style={{
-            fontSize: isScrolled ? "1.125rem" : "1.25rem",
+            fontWeight: 700,
+            fontSize: isScrolled ? "1.125rem" : "1.25rem", // text-lg vs text-xl
+            color: "#ffffff",
+            transition: "font-size 0.3s ease",
           }}
-          transition={{ duration: 0.3 }}
         >
           {designer.name}
         </motion.h1>
 
-        {/* Extra Details (on scroll up) */}
+        {/* Only show extra info when not scrolled */}
         <AnimatePresence>
           {!isScrolled && (
             <motion.div
@@ -95,8 +102,8 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="overflow-hidden"
+              transition={{ duration: 1 }}
+              style={{ overflow: "hidden" }}
             >
               <p className="text-gray-400 text-sm mt-2 mb-2">{designer.pronouns}</p>
               <p className="text-white mb-1">{designer.title}</p>

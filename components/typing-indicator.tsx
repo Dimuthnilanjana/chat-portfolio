@@ -8,7 +8,7 @@ interface TypingIndicatorProps {
 }
 
 export function TypingIndicator({
-  name = "Thimira Dulakshitha",
+  name = "Dimuth Nilanjana",
   avatar = "/placeholder.svg?height=100&width=100",
 }: TypingIndicatorProps) {
   return (
