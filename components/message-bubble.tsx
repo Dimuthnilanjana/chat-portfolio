@@ -36,7 +36,7 @@ export function MessageBubble({ type, children, animate = false }: MessageBubble
     <motion.div
       className={cn(
         "rounded-2xl p-4 shadow-md max-w-[85%]",
-        isDesigner ? "bg-gray-800 text-white rounded-tl-none" : "bg-blue-600 text-white rounded-tr-none",
+        isDesigner ? "bg-gray-800 text-white rounded-tl-none" : "bg-blue-600/40 text-white rounded-tr-none",
       )}
       initial="hidden"
       animate="visible"
