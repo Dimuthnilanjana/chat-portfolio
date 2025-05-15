@@ -23,8 +23,8 @@ export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
     <div
       className={`fixed top-0 left-0 right-0 z-20 will-change-transform ${
         isScrolled
-          ? "backdrop-blur-md bg-[#0f0f0f]/80 border-b border-gray-800/70 shadow-md"
-          : "bg-[#0f0f0f] border-b border-gray-800"
+          ? "backdrop-blur-md bg-[#0f0f0f]/80 shadow-md"
+          : "bg-[#0f0f0f] "
       }`}
       style={{
         transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",

@@ -152,8 +152,8 @@ export default function ProjectPage() {
       <div
         className={`fixed top-0 left-0 right-0 z-10 transition-all duration-300 ${
           isScrolled
-            ? "py-2 backdrop-blur-md bg-[#0f0f0f]/80 border-b border-gray-800/70 shadow-md"
-            : "py-4 bg-[#0f0f0f] border-b border-gray-800"
+            ? "py-2 backdrop-blur-md bg-[#0f0f0f]/80  shadow-md"
+            : "py-4 bg-[#0f0f0f] "
         }`}
         style={{
           transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
@@ -178,7 +178,7 @@ export default function ProjectPage() {
       <div style={{ paddingTop: `${headerHeight + 20}px` }}>
         <div className="container max-w-2xl mx-auto px-4 pb-32">
           {/* Date separator with more space */}
-          <DateSeparator />
+          {/* <DateSeparator /> */}
 
           {/* Chat conversation about the project */}
           <div className="space-y-6 mt-8">
