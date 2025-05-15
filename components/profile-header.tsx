@@ -20,96 +20,89 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ designer, isScrolled }: ProfileHeaderProps) {
   return (
-    <motion.div
-      layout
-      className="sticky top-0 z-20 border-b border-gray-800"
+    <div
+      className={`fixed top-0 left-0 right-0 z-20 will-change-transform ${
+        isScrolled
+          ? "backdrop-blur-md bg-[#0f0f0f]/80 border-b border-gray-800/70 shadow-md"
+          : "bg-[#0f0f0f] border-b border-gray-800"
+      }`}
       style={{
-        backgroundColor: isScrolled ? "rgba(15,15,15,0.95)" : "#0f0f0f",
-        boxShadow: isScrolled ? "0 2px 6px rgba(0,0,0,0.25)" : "none",
-        transition: "background-color 0.3s ease, box-shadow 0.3s ease",
-        willChange: "background-color, box-shadow", // improves GPU hinting
+        transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
+        contain: "layout paint style",
+        transform: "translateZ(0)",
       }}
     >
-      <motion.div
-        layout
-        className="container max-w-2xl mx-auto px-4 flex flex-col items-center text-center"
-        style={{
-          paddingTop: isScrolled ? 8 : 24,
-          paddingBottom: isScrolled ? 8 : 24,
-          transition: "padding 0.3s ease",
-        }}
-      >
-        {/* Avatar */}
-        <motion.div layout className="relative" style={{ marginBottom: isScrolled ? 4 : 12 }}>
-          <motion.div
-            layout
-            className="rounded-full overflow-hidden border-2 border-blue-500"
-            style={{
-              width: isScrolled ? 48 : 80,
-              height: isScrolled ? 48 : 80,
-              transition: "width 0.3s ease, height 0.3s ease",
-            }}
-          >
-            <img
-              src={designer.avatar || "/placeholder.svg"}
-              alt={designer.name}
-              className="w-full h-full object-cover"
+      <div className="container max-w-2xl mx-auto px-4">
+        <div className="flex flex-col items-center text-center py-2">
+          {/* Avatar with online indicator */}
+          <div className="relative" style={{ marginBottom: isScrolled ? "4px" : "12px" }}>
+            <div
+              className="rounded-full overflow-hidden border-2 border-blue-500"
               style={{
-                display: "block",
-              }}
-            />
-          </motion.div>
-          {designer.isOnline && (
-            <motion.div
-              layout
-              style={{
-                position: "absolute",
-                backgroundColor: "#22c55e",
-                border: "2px solid #0f0f0f",
-                borderRadius: "9999px",
-                width: isScrolled ? 12 : 16,
-                height: isScrolled ? 12 : 16,
-                bottom: 0,
-                right: 0,
+                width: isScrolled ? "48px" : "80px",
+                height: isScrolled ? "48px" : "80px",
                 transition: "width 0.3s ease, height 0.3s ease",
+                willChange: "width, height",
+                transform: "translateZ(0)",
               }}
-            />
-          )}
-        </motion.div>
-
-        {/* Name */}
-        <motion.h1
-          layout
-          style={{
-            fontWeight: 700,
-            fontSize: isScrolled ? "1.125rem" : "1.25rem",
-            color: "#ffffff",
-            transition: "font-size 0.3s ease",
-          }}
-        >
-          {designer.name}
-        </motion.h1>
-
-        <AnimatePresence>
-          {!isScrolled && (
-            <motion.div
-              key="details"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              style={{ overflow: "hidden" }}
             >
-              <p className="text-gray-400 text-sm mt-2 mb-2">{designer.pronouns}</p>
-              <p className="text-white mb-1">{designer.title}</p>
-              <p className="text-gray-300 mb-3">{designer.tagline}</p>
-              <p className="text-gray-400 text-sm">
-                {designer.personality} · {designer.location} · {designer.email}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
+              <img
+                src={designer.avatar || "/placeholder.svg"}
+                alt={designer.name}
+                className="w-full h-full object-cover"
+                style={{ transform: "translateZ(0)" }}
+              />
+            </div>
+            {designer.isOnline && (
+              <div
+                className="absolute border-2 border-[#0f0f0f] bg-green-500 rounded-full"
+                style={{
+                  width: isScrolled ? "12px" : "16px",
+                  height: isScrolled ? "12px" : "16px",
+                  right: "0px",
+                  bottom: "0px",
+                  transition: "width 0.3s ease, height 0.3s ease",
+                  willChange: "width, height",
+                }}
+              ></div>
+            )}
+          </div>
+
+          <div>
+            {/* Name */}
+            <h1
+              className="font-bold"
+              style={{
+                fontSize: isScrolled ? "1.125rem" : "1.25rem",
+                transition: "font-size 0.3s ease",
+                willChange: "font-size",
+              }}
+            >
+              {designer.name}
+            </h1>
+
+            {/* Additional info with AnimatePresence for smooth enter/exit */}
+            <AnimatePresence>
+              {!isScrolled && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ overflow: "hidden", willChange: "opacity, height" }}
+                >
+                  <p className="text-gray-400 text-sm mt-1 mb-2">{designer.pronouns}</p>
+                  <p className="text-white mb-1">{designer.title}</p>
+                  <p className="text-gray-300 mb-3">{designer.tagline}</p>
+                  <p className="text-gray-400 text-sm">
+                    {designer.personality} · {designer.location} · {designer.email}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

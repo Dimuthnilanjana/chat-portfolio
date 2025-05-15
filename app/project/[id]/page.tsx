@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation"
 import { ChevronLeft, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
 import { MessageBubble } from "@/components/message-bubble"
 import { useState, useEffect } from "react"
 import { TypingIndicator } from "@/components/typing-indicator"
 import { DateSeparator } from "@/components/date-separator"
 import { motion, AnimatePresence } from "framer-motion"
+import { useParams } from "next/navigation"
 
 interface Project {
   id: number
@@ -22,14 +22,16 @@ interface Project {
   results: string
 }
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
+export default function ProjectPage() {
   const router = useRouter()
-  const projectId = Number.parseInt(params.id)
+  const params = useParams()
+  const projectId = Number.parseInt(params.id as string)
   const [visibleMessages, setVisibleMessages] = useState(0)
   const [isTyping, setIsTyping] = useState(false)
   const [currentTypingIndex, setCurrentTypingIndex] = useState(0)
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [headerHeight, setHeaderHeight] = useState(80)
   const totalMessages = 8
 
   // Sample project data - in a real app, you'd fetch this based on the ID
@@ -38,7 +40,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
       id: 1,
       title: "E-commerce Redesign",
       description: "Complete overhaul of an e-commerce platform focusing on conversion optimization and accessibility.",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/placeholder.svg?height=208&width=308",
       tags: ["UI/UX", "Figma", "React"],
       tools: ["Figma", "React", "Next.js", "Tailwind CSS", "Storybook"],
       challenge:
@@ -52,7 +54,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
       id: 2,
       title: "Finance Dashboard",
       description: "Data visualization dashboard for financial analytics with dark mode and responsive design.",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/placeholder.svg?height=208&width=308",
       tags: ["Dashboard", "Data Viz", "Next.js"],
       tools: ["Next.js", "D3.js", "TypeScript", "Tailwind CSS", "Recharts"],
       challenge:
@@ -65,6 +67,10 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   }
 
   const project = projects[projectId]
+  const designer = {
+    name: "Thimira Dulakshitha",
+    avatar: "/placeholder.svg?height=100&width=100",
+  }
 
   // Handle scroll events to show/hide scroll-to-top button and header state
   useEffect(() => {
@@ -144,11 +150,17 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     <main className="min-h-screen bg-[#0f0f0f] text-white">
       {/* Header with back button - glass effect when scrolled */}
       <div
-        className={`sticky top-0 z-10 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-10 transition-all duration-300 ${
           isScrolled
             ? "py-2 backdrop-blur-md bg-[#0f0f0f]/80 border-b border-gray-800/70 shadow-md"
             : "py-4 bg-[#0f0f0f] border-b border-gray-800"
         }`}
+        style={{
+          transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
+          contain: "layout paint style",
+          transform: "translateZ(0)",
+          willChange: "transform",
+        }}
       >
         <div className="container max-w-2xl mx-auto px-4 flex items-center">
           <Button
@@ -163,175 +175,188 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className="container max-w-2xl mx-auto px-4 py-6 pb-24">
-        {/* Date separator */}
-        <DateSeparator />
+      <div style={{ paddingTop: `${headerHeight + 20}px` }}>
+        <div className="container max-w-2xl mx-auto px-4 pb-32">
+          {/* Date separator with more space */}
+          <DateSeparator />
 
-        {/* Project hero image */}
-        <div className="relative h-64 w-full mb-6 rounded-lg overflow-hidden">
-          <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
-        </div>
-
-        {/* Chat conversation about the project */}
-        <div className="space-y-6">
-          {/* Introduction */}
-          {isTyping && currentTypingIndex === 1 && <TypingIndicator />}
-          {visibleMessages >= 1 && (
-            <div className="flex items-start gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
-                <img
-                  src="/placeholder.svg?height=100&width=100"
-                  alt="Designer"
-                  className="w-full h-full object-cover"
-                />
+          {/* Chat conversation about the project */}
+          <div className="space-y-6 mt-8">
+            {/* Project Introduction */}
+            {isTyping && currentTypingIndex === 1 && <TypingIndicator name={designer.name} avatar={designer.avatar} />}
+            {visibleMessages >= 1 && (
+              <div className="flex items-start gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                  <img
+                    src={designer.avatar || "/placeholder.svg"}
+                    alt={designer.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                  <MessageBubble type="designer" animate={true}>
+                    <div className="w-full">
+                      <div className="image-container">
+                        <img
+                          src={project.image || "/placeholder.svg"}
+                          alt={project.title}
+                          className="w-full h-[208px] object-cover"
+                        />
+                      </div>
+                      <h2 className="text-lg font-bold mb-2">{project.title}</h2>
+                      <p className="mb-3">{project.description}</p>
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {project.tags.map((tag, index) => (
+                          <span key={index} className="px-2 py-0.5 bg-gray-800 rounded-full text-xs text-blue-300">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </MessageBubble>
+                </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Thimira Dulakshitha</div>
-                <MessageBubble type="designer" animate={true}>
-                  <h2 className="text-lg font-bold mb-2">{project.title}</h2>
-                  <p>{project.description}</p>
+            )}
+
+            {/* User question about tools */}
+            {visibleMessages >= 2 && (
+              <div className="flex flex-col items-end mb-6">
+                <div className="text-xs text-gray-400 mb-1">You</div>
+                <MessageBubble type="user" animate={true}>
+                  <p>What tools did you use for this project?</p>
                 </MessageBubble>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* User question about tools */}
-          {visibleMessages >= 2 && (
-            <div className="flex flex-col items-end mb-6">
-              <div className="text-xs text-gray-400 mb-1">You</div>
-              <MessageBubble type="user" animate={true}>
-                <p>What tools did you use for this project?</p>
-              </MessageBubble>
-            </div>
-          )}
-
-          {/* Tools used */}
-          {isTyping && currentTypingIndex === 3 && <TypingIndicator />}
-          {visibleMessages >= 3 && (
-            <div className="flex items-start gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
-                <img
-                  src="/placeholder.svg?height=100&width=100"
-                  alt="Designer"
-                  className="w-full h-full object-cover"
-                />
+            {/* Tools used */}
+            {isTyping && currentTypingIndex === 3 && <TypingIndicator name={designer.name} avatar={designer.avatar} />}
+            {visibleMessages >= 3 && (
+              <div className="flex items-start gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                  <img
+                    src={designer.avatar || "/placeholder.svg"}
+                    alt={designer.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                  <MessageBubble type="designer" animate={true}>
+                    <h3 className="font-bold mb-2">Tools & Technologies</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tools.map((tool, index) => (
+                        <span key={index} className="px-2 py-1 bg-gray-700 rounded-full text-xs text-blue-300">
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  </MessageBubble>
+                </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Thimira Dulakshitha</div>
-                <MessageBubble type="designer" animate={true}>
-                  <h3 className="font-bold mb-2">Tools & Technologies</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tools.map((tool, index) => (
-                      <span key={index} className="px-2 py-1 bg-gray-700 rounded-full text-xs text-blue-300">
-                        {tool}
-                      </span>
-                    ))}
-                  </div>
+            )}
+
+            {/* User question about challenge */}
+            {visibleMessages >= 4 && (
+              <div className="flex flex-col items-end mb-6">
+                <div className="text-xs text-gray-400 mb-1">You</div>
+                <MessageBubble type="user" animate={true}>
+                  <p>What was the main challenge in this project?</p>
                 </MessageBubble>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* User question about challenge */}
-          {visibleMessages >= 4 && (
-            <div className="flex flex-col items-end mb-6">
-              <div className="text-xs text-gray-400 mb-1">You</div>
-              <MessageBubble type="user" animate={true}>
-                <p>What was the main challenge in this project?</p>
-              </MessageBubble>
-            </div>
-          )}
-
-          {/* Challenge */}
-          {isTyping && currentTypingIndex === 5 && <TypingIndicator />}
-          {visibleMessages >= 5 && (
-            <div className="flex items-start gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
-                <img
-                  src="/placeholder.svg?height=100&width=100"
-                  alt="Designer"
-                  className="w-full h-full object-cover"
-                />
+            {/* Challenge */}
+            {isTyping && currentTypingIndex === 5 && <TypingIndicator name={designer.name} avatar={designer.avatar} />}
+            {visibleMessages >= 5 && (
+              <div className="flex items-start gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                  <img
+                    src={designer.avatar || "/placeholder.svg"}
+                    alt={designer.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                  <MessageBubble type="designer" animate={true}>
+                    <h3 className="font-bold mb-2">The Challenge</h3>
+                    <p>{project.challenge}</p>
+                  </MessageBubble>
+                </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Thimira Dulakshitha</div>
-                <MessageBubble type="designer" animate={true}>
-                  <h3 className="font-bold mb-2">The Challenge</h3>
-                  <p>{project.challenge}</p>
+            )}
+
+            {/* User question about solution */}
+            {visibleMessages >= 6 && (
+              <div className="flex flex-col items-end mb-6">
+                <div className="text-xs text-gray-400 mb-1">You</div>
+                <MessageBubble type="user" animate={true}>
+                  <p>How did you solve it?</p>
                 </MessageBubble>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* User question about solution */}
-          {visibleMessages >= 6 && (
-            <div className="flex flex-col items-end mb-6">
-              <div className="text-xs text-gray-400 mb-1">You</div>
-              <MessageBubble type="user" animate={true}>
-                <p>How did you solve it?</p>
-              </MessageBubble>
-            </div>
-          )}
-
-          {/* Solution */}
-          {isTyping && currentTypingIndex === 7 && <TypingIndicator />}
-          {visibleMessages >= 7 && (
-            <div className="flex items-start gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
-                <img
-                  src="/placeholder.svg?height=100&width=100"
-                  alt="Designer"
-                  className="w-full h-full object-cover"
-                />
+            {/* Solution */}
+            {isTyping && currentTypingIndex === 7 && <TypingIndicator name={designer.name} avatar={designer.avatar} />}
+            {visibleMessages >= 7 && (
+              <div className="flex items-start gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                  <img
+                    src={designer.avatar || "/placeholder.svg"}
+                    alt={designer.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                  <MessageBubble type="designer" animate={true}>
+                    <h3 className="font-bold mb-2">The Solution</h3>
+                    <p>{project.solution}</p>
+                  </MessageBubble>
+                </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Thimira Dulakshitha</div>
-                <MessageBubble type="designer" animate={true}>
-                  <h3 className="font-bold mb-2">The Solution</h3>
-                  <p>{project.solution}</p>
+            )}
+
+            {/* User question about results */}
+            {visibleMessages >= 8 && (
+              <div className="flex flex-col items-end mb-6">
+                <div className="text-xs text-gray-400 mb-1">You</div>
+                <MessageBubble type="user" animate={true}>
+                  <p>What were the results?</p>
                 </MessageBubble>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* User question about results */}
-          {visibleMessages >= 8 && (
-            <div className="flex flex-col items-end mb-6">
-              <div className="text-xs text-gray-400 mb-1">You</div>
-              <MessageBubble type="user" animate={true}>
-                <p>What were the results?</p>
-              </MessageBubble>
-            </div>
-          )}
-
-          {/* Results */}
-          {isTyping && currentTypingIndex === 9 && <TypingIndicator />}
-          {visibleMessages >= 9 && (
-            <div className="flex items-start gap-2 mb-6">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
-                <img
-                  src="/placeholder.svg?height=100&width=100"
-                  alt="Designer"
-                  className="w-full h-full object-cover"
-                />
+            {/* Results */}
+            {isTyping && currentTypingIndex === 9 && <TypingIndicator name={designer.name} avatar={designer.avatar} />}
+            {visibleMessages >= 9 && (
+              <div className="flex items-start gap-2 mb-6">
+                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mt-1">
+                  <img
+                    src={designer.avatar || "/placeholder.svg"}
+                    alt={designer.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
+                  <MessageBubble type="designer" animate={true}>
+                    <h3 className="font-bold mb-2">The Results</h3>
+                    <p>{project.results}</p>
+                  </MessageBubble>
+                </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Thimira Dulakshitha</div>
-                <MessageBubble type="designer" animate={true}>
-                  <h3 className="font-bold mb-2">The Results</h3>
-                  <p>{project.results}</p>
-                </MessageBubble>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Scroll to top button */}
+      {/* Scroll to top button - with more space from bottom */}
       <AnimatePresence>
         {showScrollTop && (
           <motion.div
-            className="fixed bottom-20 right-4 z-50"
+            className="fixed bottom-24 right-4 z-50"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
