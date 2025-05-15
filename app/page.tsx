@@ -63,14 +63,14 @@ export default function Home() {
       name: "Sarah Johnson",
       role: "Product Manager at TechCorp",
       content:
-        "Working with Thimira was incredible. They delivered beyond our expectations and were a joy to collaborate with.",
+        "Working with Dimuth was incredible. They delivered beyond our expectations and were a joy to collaborate with.",
       avatar: "/placeholder.svg?height=100&width=100",
     },
     {
       id: 2,
       name: "Michael Chen",
       role: "Founder at StartupX",
-      content: "Thimira has an eye for detail that transformed our product. Highly recommended for any design project.",
+      content: "Dimuth has an eye for detail that transformed our product. Highly recommended for any design project.",
       avatar: "/placeholder.svg?height=100&width=100",
     },
   ]
@@ -203,7 +203,7 @@ export default function Home() {
                 <div>
                   <div className="text-xs text-gray-400 mb-1">{designer.name}</div>
                   <MessageBubble type="designer" animate={true}>
-                    <p>Hey! It's me, Thimira, a product designer based in Colombo. How can I help you today? 😊</p>
+                    <p>Hey! It's me, Dimuth, a UX Engineer based in Colombo. How can I help you today? 😊</p>
                   </MessageBubble>
                 </div>
               </div>
