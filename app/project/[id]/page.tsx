@@ -68,7 +68,7 @@ export default function ProjectPage() {
 
   const project = projects[projectId]
   const designer = {
-    name: "Thimira Dulakshitha",
+    name: "Dimuth Nilanjana",
     avatar: "/placeholder.svg?height=100&width=100",
   }
 
