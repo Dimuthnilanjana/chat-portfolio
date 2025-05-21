@@ -36,7 +36,7 @@ export default function Home() {
     location: "Colombo, Sri Lanka",
     email: "dimuth.work@gmail.com",
     // personality: "ENFJ",
-    avatar: "/placeholder.svg?height=250&width=250",
+    avatar: "/img.jpeg?height=250&width=250",
     isOnline: true,
   }
 
