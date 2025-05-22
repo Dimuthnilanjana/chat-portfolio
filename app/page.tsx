@@ -61,14 +61,14 @@ export default function Home() {
     {
       id: 1,
       name: "Sarah Johnson",
-      role: "Product Manager at TechCorp",
+      role: "Tech Lead UI/UX",
       content:
         "Working with Dimuth was incredible. They delivered beyond our expectations and were a joy to collaborate with.",
       avatar: "/placeholder.svg?height=100&width=100",
     },
     {
       id: 2,
-      name: "Michael Chen",
+      name: "Senior UI/UX Engineer",
       role: "Founder at StartupX",
       content: "Dimuth has an eye for detail that transformed our product. Highly recommended for any design project.",
       avatar: "/placeholder.svg?height=100&width=100",
