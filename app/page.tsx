@@ -34,7 +34,7 @@ export default function Home() {
     pronouns: "He/Him",
     // tagline: "Make it Iconic. 🔍",
     location: "Colombo, Sri Lanka",
-    email: "dimuth.work@gmail.com",
+    email: "dimuth.works@gmail.com",
     // personality: "ENFJ",
     avatar: "/img.jpeg?height=250&width=250",
     isOnline: true,
